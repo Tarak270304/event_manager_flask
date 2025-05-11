@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Scanner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #reader { width: 300px; margin: auto; }
+    </style>
+</head>
+<body>
+    <h2>Scan QR Code</h2>
+    <div id="reader"></div>
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // Automatically post the QR data to the server
+            fetch("/scan-checkin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ qr_data: decodedText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "/scan/" + data.user_id;
+
+                } else {
+                    alert("Invalid QR code or user not found.");
+                }
+            });
+        }
+
+        const html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 250 },
+            onScanSuccess
+        ).catch(err => console.error("Camera start error:", err));
+    </script>
+</body>
+</html>
