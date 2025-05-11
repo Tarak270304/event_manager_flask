@@ -1,17 +1,41 @@
+<!-- scan_result.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Scan Result</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { font-family: Arial; text-align: center; padding: 20px; }
-        img { width: 150px; margin-top: 20px; border-radius: 10px; }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .container {
+            text-align: center;
+            margin-top: 40px;
+        }
     </style>
 </head>
 <body>
-    <h2>Entry Verification</h2>
-    <p><strong>Name:</strong> {{ name }}</p>
-    <img src="{{ photo_url }}" alt="User Photo">
-    <p>If the person matches the photo, allow entry.</p>
+    <div class="container">
+        <h2>Welcome, {{ name }}!</h2>
+        <img src="{{ photo_url }}" alt="User Photo">
+        <p>Scan successful!</p>
+        <p>Returning to scanner in <span id="countdown">5</span> seconds...</p>
+        <button onclick="window.location.href='/scan'" style="margin-top: 10px;">Scan Next</button>
+    </div>
+
+    <script>
+        let count = 5;
+        const countdownEl = document.getElementById("countdown");
+        const timer = setInterval(() => {
+            count--;
+            countdownEl.textContent = count;
+            if (count <= 0) {
+                clearInterval(timer);
+                window.location.href = "/scan";
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
